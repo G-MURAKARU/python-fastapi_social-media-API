@@ -21,16 +21,12 @@ SQLMODEL_DATABASE_URL = f"postgresql://{postgresql_username}:{postgresql_passwor
 connect_args = {"check_same_thread": False}
 engine = create_engine(SQLMODEL_DATABASE_URL, echo=True, connect_args=connect_args)
 
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+# not needed anymore, DB migrations handled by alembic
+# def create_db_and_tables():
+#     SQLModel.metadata.create_all(engine)
 
 
 # getting DB sessions as a dependency, to eliminate 'with' and make life easier
 def start_session():
     with Session(engine) as session:
         yield session
-
-
-if __name__ == "__main__":
-    create_db_and_tables(engine)

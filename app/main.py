@@ -7,10 +7,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI
 
-from .database import SQLModel, create_db_and_tables
-
 # to import our app routes
 from .routers import auth, posts, users, vote
+
+# below imports not required because of alembic
+# from .database import SQLModel, create_db_and_tables
+
 
 # to enforce a schema
 # import pydantic <- SQLModel ORM & FastAPI use Pydantic models in the background
@@ -25,7 +27,7 @@ origins = ["https://www.google.com"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
