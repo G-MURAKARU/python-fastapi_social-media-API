@@ -31,10 +31,10 @@ def login_user(
         authenticated_user = session.exec(
             select(models.User).where(models.User.email == user_form_data.username)
         ).one()
-    except NoResultFound:
+    except NoResultFound as e:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid credentials."
-        )
+        ) from e
 
     # check if the user exists based on email
 

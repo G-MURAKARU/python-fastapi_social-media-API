@@ -30,11 +30,10 @@ def create_user(user: models.UserCreate, session: Session = Depends(start_sessio
 # API endpoint to retrieve user info based on ID
 @router.get("/{user_id}", response_model=models.UserReadWithPosts)
 def get_user(user_id: int, session: Session = Depends(start_session)):
-    queried_user = session.get(models.User, user_id)
-    if not queried_user:
+    if queried_user := session.get(models.User, user_id):
+        return queried_user
+    else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User (id: {user_id}) Not Found.",
         )
-
-    return queried_user

@@ -1,6 +1,6 @@
 # handles authentication - JWT tokens
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -25,15 +25,18 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 def create_access_token(data: dict):
+    # sourcery skip: inline-immediately-returned-variable
     """Generates a JWT token for a logged-in user"""
     # initialising the payload to populate the JWT token
     jwt_payload = data.copy()
 
     # setting the token's lifetime (30 minutes)
-    jwt_lifetime = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    jwt_lifetime = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
 
     # update the payload to carry the token's lifetime (it's a dict)
-    jwt_payload.update({"exp": jwt_lifetime})
+    jwt_payload["exp"] = jwt_lifetime
 
     # creating the JWT token
     # 1. payload
@@ -49,15 +52,15 @@ def verify_access_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
 
-        id = payload.get("user_id")
+        _id = payload.get("user_id")
         name = payload.get("username")
 
-        if not id:
+        if not _id:
             raise credentials_exception
 
-        token_data = models.TokenPayload(id=id, name=name)
-    except JWTError:
-        raise credentials_exception
+        token_data = models.TokenPayload(id=_id, name=name)
+    except JWTError as e:
+        raise credentials_exception from e
 
     return token_data
 
@@ -75,11 +78,10 @@ def get_current_user(
 
     user_token = verify_access_token(token, credentials_exception)
 
-    logged_in_user = session.get(models.User, int(user_token.id))
-    if not logged_in_user:
+    if logged_in_user := session.get(models.User, int(user_token.id)):
+        return logged_in_user
+    else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User (id: {user_token.id}) Not Found.",
         )
-
-    return logged_in_user

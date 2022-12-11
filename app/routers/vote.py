@@ -38,12 +38,12 @@ def add_vote(
         session.commit()
         return {"message": "vote deleted."}
 
-    except NoResultFound:
+    except NoResultFound as e:
         if vote.vote_dir == 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Vote on post {vote.post_id} not found.",
-            )
+            ) from e
 
         new_vote = models.Vote.from_orm(
             vote, update={"user_id": current_user.id, "post_id": vote.post_id}

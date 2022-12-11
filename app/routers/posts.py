@@ -29,7 +29,7 @@ def get_posts(
     limit: int = 10,
     skip: int = 0,
     search: Optional[str] = "",
-):
+):  # sourcery skip: inline-immediately-returned-variable
     # USING RAW SQL AND PSYCOPG2 DIRECTLY
 
     # try:
