@@ -3,3 +3,4 @@ venv/
 Dockerfile
 .dockerignore
 .pytest_cache
+.DS_Store
