@@ -18,8 +18,8 @@ postgresql_port = config_settings.fastapi_postgresql_db_port
 SQLMODEL_DATABASE_URL = f"postgresql://{postgresql_username}:{postgresql_password}@{postgresql_hostname}:{postgresql_port}/{postgreql_db_name}"
 
 # to create the engine
-connect_args = {"check_same_thread": False}
-engine = create_engine(SQLMODEL_DATABASE_URL, echo=True, connect_args=connect_args)
+# connect_args = {"check_same_thread": False}
+engine = create_engine(SQLMODEL_DATABASE_URL, echo=True)
 
 # not needed anymore, DB migrations handled by alembic
 # def create_db_and_tables():

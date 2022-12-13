@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  api:
+    image: gicheru/fastapi-trialapi
+    depends_on:
+      - postgres
+    ports:
+      - "80:8000"
+
+    environment:
+      - FASTAPI_POSTGRESQL_DB_USERNAME=${FASTAPI_POSTGRESQL_DB_USERNAME}
+      - FASTAPI_POSTGRESQL_DB_PASSWORD=${FASTAPI_POSTGRESQL_DB_PASSWORD}
+      - FASTAPI_POSTGRESQL_DB_HOSTNAME=${FASTAPI_POSTGRESQL_DB_HOSTNAME}
+      - FASTAPI_POSTGRESQL_DB_PORT=${FASTAPI_POSTGRESQL_DB_PORT}
+      - FASTAPI_POSTGRESQL_DB_NAME=${FASTAPI_POSTGRESQL_DB_NAME}
+      - FASTAPI_JWT_SECRET_KEY=${FASTAPI_JWT_SECRET_KEY}
+      - FASTAPI_JWT_ALGORITHM=${FASTAPI_JWT_ALGORITHM}
+      - FASTAPI_JWT_ACCESS_TOKEN_EXPIRE_MINUTES=${FASTAPI_JWT_ACCESS_TOKEN_EXPIRE_MINUTES}
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=${FASTAPI_POSTGRESQL_DB_PASSWORD}
+      - POSTGRES_DB=${FASTAPI_POSTGRESQL_DB_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
