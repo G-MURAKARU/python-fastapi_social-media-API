@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
 
+from app.config import config_settings
 from app.database import start_session
 from app.main import app
 
@@ -11,10 +12,14 @@ from app.main import app
 # to define the network connection credentials for the SQL ORM engine
 # engine - object that handles communication with the database
 
+### USING ENV VARIABLES INSTEAD OF HARD CODING VALUES FOR SAFETY REASONS ###
+postgresql_username = config_settings.fastapi_postgresql_db_username
+postgresql_password = config_settings.fastapi_postgresql_db_password
+postgresql_hostname = config_settings.fastapi_postgresql_db_hostname
+postgresql_port = config_settings.fastapi_postgresql_db_port
+
 # URL = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
-SQLMODEL_DATABASE_URL = (
-    "postgresql://postgres:lifegoeson@localhost:5432/FastAPI_TestingDB"
-)
+SQLMODEL_DATABASE_URL = f"postgresql://{postgresql_username}:{postgresql_password}@localhost:{postgresql_port}/FastAPI_TestingDB"
 
 # to create the engine
 test_engine = create_engine(SQLMODEL_DATABASE_URL, echo=True)
