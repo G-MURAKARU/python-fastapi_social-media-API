@@ -4,3 +4,4 @@ venv/
 .DS_Store
 *.pdf
 docker-compose-dev.yml
+.pytest_cache/

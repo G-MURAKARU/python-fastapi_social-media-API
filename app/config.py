@@ -6,7 +6,7 @@ from pydantic import BaseSettings
 # akin to using the OS module and getenv() function
 # helps in keeping track of environment variables, that change in different environments
 # (e.g. development vis-a-vis production)
-# it scans the env variable (liek running env/printenv in terminal) for case insensitive matches
+# it scans the env variable (like running env/printenv in terminal) for case insensitive matches
 # and assigns them
 class ConfigSettings(BaseSettings):
     fastapi_postgresql_db_username: str

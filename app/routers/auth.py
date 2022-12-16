@@ -12,10 +12,8 @@ from ..database import start_session
 
 router = APIRouter(tags=["Authentication"])
 
-# REMEMBER: FastAPI will execute the first matched path operation (i.e. request + endpoint)
 
-
-@router.post("/login")
+@router.post("/login", response_model=models.Token)
 # using OAuth2PasswordRequestForm instead of models.UserLogin, as a dependency
 # note: it is sent as form data, not as json body
 def login_user(
