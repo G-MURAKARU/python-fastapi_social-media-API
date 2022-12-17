@@ -40,7 +40,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        os: [macos-12, ubuntu-latest]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Pull github repository
