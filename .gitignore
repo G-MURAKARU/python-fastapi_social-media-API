@@ -5,3 +5,4 @@ venv/
 *.pdf
 docker-compose-dev.yml
 .pytest_cache/
+.vscode/

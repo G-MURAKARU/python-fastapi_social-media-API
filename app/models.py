@@ -61,7 +61,7 @@ class UserBase(SQLModel):
 
 
 class UserRead(UserBase):
-    pass
+    id: int
 
 
 class UserCreate(UserBase):
@@ -107,7 +107,7 @@ class VoteReadPosts(SQLModel):
 
 
 # this is being used as a Response Model i.e. defining what we actually want to send back to the client from the DB
-class PostRead(PostOut):
+class PostRead(PostReadAll):
     updated_at: str
     pass
 
@@ -128,7 +128,7 @@ class UserVote(SQLModel):
 
 class User(UserBase, table=True):
     __tablename__ = "users"
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(nullable=False, primary_key=True)
     password: str
     joined_in: Optional[datetime] = Field(
         sa_column=Column(
@@ -145,7 +145,7 @@ class User(UserBase, table=True):
 # NOTE: the parameter 'table=True' tells SQLModel that this is a DATABASE TABLE and should be created/loaded onto the DB
 class Post(PostBase, table=True):
     __tablename__ = "posts"
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(primary_key=True, nullable=False)
     # headache needed to set server-side default values
     rating: Optional[int] = Field(sa_column=Column(Integer, server_default="0"))
     updated_at: Optional[datetime] = Field(

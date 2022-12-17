@@ -59,8 +59,8 @@ def verify_access_token(token: str, credentials_exception):
             raise credentials_exception
 
         token_data = models.TokenPayload(id=_id, name=name)
-    except JWTError as e:
-        raise credentials_exception from e
+    except JWTError as error:
+        raise credentials_exception from error
 
     return token_data
 

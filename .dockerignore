@@ -5,3 +5,4 @@ Dockerfile
 .pytest_cache
 .DS_Store
 .pytest_cache/
+.vscode/

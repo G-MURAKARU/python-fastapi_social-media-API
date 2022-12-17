@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
+from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session, col, func, select  # or_
 
 # to 'access the app object' from main, FastAPI uses routers
@@ -56,21 +57,26 @@ def get_posts(
     # posts_iterable = session.exec(query) -> returns an iterable
     # posts = posts_iterable.all() -> returns a list
     # the above, in one line
-    posts = session.exec(
-        select(models.Post)
+
+    # posts = session.exec(
+    #     select(models.Post)
+    #     .limit(limit=limit)
+    #     .offset(offset=skip)
+    #     # to allow for searching by KEYWORD in the TITLE e.g. all posts about formula 1
+    #     .where(col(models.Post.title).contains(search))
+    # ).all()
+
+    post_with_likes = session.exec(
+        select(models.Post, func.count(models.Vote.post_id).label("likes"))
         .limit(limit=limit)
         .offset(offset=skip)
         # to allow for searching by KEYWORD in the TITLE e.g. all posts about formula 1
         .where(col(models.Post.title).contains(search))
-    ).all()
-
-    post_likes = session.exec(
-        select(models.Post, func.count(models.Vote.post_id).label("likes"))
         .join(models.Vote, isouter=True)
         .group_by(models.Post.id)
     ).all()
 
-    return post_likes
+    return post_with_likes
 
 
 # @app.post("/createposts")
@@ -133,7 +139,7 @@ def create_post(
     session.add(new_post)
     session.commit()
     session.refresh(new_post)
-    new_post.updated_at = new_post.updated_at.strftime("%d/%m/%Y, %H:%M:%S")
+    new_post.updated_at = new_post.updated_at.strftime("%Y/%m/%d, %H:%M:%S")
 
     return new_post
 
@@ -174,20 +180,21 @@ def get_post(
     # with Session(engine) as session:
     # by using dependencies, the need for a context manager is eliminated
 
-    queried_post = session.get(models.Post, post_id)
+    # queried_post = session.get(models.Post, post_id)
 
-    queried_post = session.exec(
-        select(models.Post, func.count(models.Vote.post_id).label("likes"))
-        .where(models.Post.id == post_id)
-        .join(models.Vote, isouter=True)
-        .group_by(models.Post.id)
-    ).one()
-
-    if not queried_post:
+    try:
+        queried_post = session.exec(
+            select(models.Post, func.count(models.Vote.post_id).label("likes"))
+            .where(models.Post.id == post_id)
+            .join(models.Vote, isouter=True)
+            .group_by(models.Post.id)
+        ).one()
+    except NoResultFound as error:
+        # if not queried_post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post (id: {post_id}) Not Found.",
-        )
+        ) from error
     # queried_post.updated_at = queried_post.updated_at.strftime("%Y/%m/%d, %H:%M:%S")
 
     print(type(queried_post))
