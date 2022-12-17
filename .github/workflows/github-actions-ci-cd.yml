@@ -28,8 +28,8 @@ jobs:
       postgres:
         image: postgres # official image from dockerhub
         env:
-          - POSTGRES_PASSWORD=${{secrets.FASTAPI_POSTGRESQL_DB_PASSWORD}}
-          - POSTGRES_DB=${{secrets.FASTAPI_POSTGRESQL_DB_NAME}}
+          POSTGRES_PASSWORD=${{secrets.FASTAPI_POSTGRESQL_DB_PASSWORD}}
+          POSTGRES_DB=${{secrets.FASTAPI_POSTGRESQL_DB_NAME}}
         ports:
           - 5432:5432
         # health checks
