@@ -21,7 +21,7 @@ class ConfigSettings(BaseSettings):
     # telling Pydantic where to look for the environment variables
     class Config:
         # env_file = "/Users/not-gich/.zshrc"
-        env_file = "../.env"
+        env_file = ".env"
 
 
 # instantiating the above class (to run it an extract the values)

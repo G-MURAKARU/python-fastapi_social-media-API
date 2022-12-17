@@ -15,6 +15,9 @@ from app.oauth2 import create_access_token
 # engine - object that handles communication with the database
 
 ### USING ENV VARIABLES INSTEAD OF HARD CODING VALUES FOR SAFETY REASONS ###
+# edit this so the tests directory can 'see' the .env file
+config_settings.Config.env_file = "../.env"
+
 postgresql_username = config_settings.fastapi_postgresql_db_username
 postgresql_password = config_settings.fastapi_postgresql_db_password
 postgresql_hostname = config_settings.fastapi_postgresql_db_hostname
@@ -22,7 +25,6 @@ postgresql_port = config_settings.fastapi_postgresql_db_port
 
 # URL = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
 
-# NOTE: change env_file variable in config.py file to '../.env' for testing
 SQLMODEL_DATABASE_URL = f"postgresql://{postgresql_username}:{postgresql_password}@localhost:{postgresql_port}/FastAPI_TestingDB"
 
 # to create the engine
