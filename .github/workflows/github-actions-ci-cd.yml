@@ -12,9 +12,11 @@ on: # [push, pull_request]
       - "main"
 
 jobs:
-  job1:
+  build:
+    # development, testing or production environments
     environment:
       name: Testing
+    # setting environment variables using GitHub Secrets
     env:
       FASTAPI_POSTGRESQL_DB_USERNAME: ${{secrets.FASTAPI_POSTGRESQL_DB_USERNAME}}
       FASTAPI_POSTGRESQL_DB_PASSWORD: ${{secrets.FASTAPI_POSTGRESQL_DB_PASSWORD}}
@@ -24,9 +26,11 @@ jobs:
       FASTAPI_JWT_SECRET_KEY: ${{secrets.FASTAPI_JWT_SECRET_KEY}}
       FASTAPI_JWT_ALGORITHM: ${{secrets.FASTAPI_JWT_ALGORITHM}}
       FASTAPI_JWT_ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.FASTAPI_JWT_ACCESS_TOKEN_EXPIRE_MINUTES}}
+    # setting up additional services e.g. a testing database
     services:
       postgres:
         image: postgres # official image from dockerhub
+        # more environment variables
         env:
           POSTGRES_PASSWORD: ${{secrets.FASTAPI_POSTGRESQL_DB_PASSWORD}}
           POSTGRES_DB: ${{secrets.FASTAPI_POSTGRESQL_DB_NAME}}
@@ -41,6 +45,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        # version: ['3.10']
     runs-on: ${{ matrix.os }}
     steps:
       - name: Pull github repository
@@ -64,6 +69,7 @@ jobs:
           path: junit/test-results-3.10.xml
         # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
+      # code below from Docker docs, intro to GitHub Actions
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:

@@ -6,3 +6,4 @@ Dockerfile
 .DS_Store
 .pytest_cache/
 .vscode/
+docker-compose-dev.yml
